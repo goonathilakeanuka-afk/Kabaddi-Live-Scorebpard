@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kabaddi Championship Scoreboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700;800&family=Orbitron:wght@700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        .font-digital { font-family: 'Rajdhani', sans-serif; font-weight: 800; }
+        .font-clock { font-family: 'Orbitron', monospace; font-weight: 900; }
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
+        .stadium-card { background: #1e293b; border: 2px solid #334155; }
+        .skew-title { transform: skew(-5deg); }
+        /* Ensure the textarea expands without extra padding shifts */
+        #tournament-title { 
+            line-height: 1.2;
+            min-height: 1.5em; 
+            box-sizing: border-box;
+            display: block;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-4 md:p-6 text-white relative overflow-x-hidden">
+
+    <div class="w-full flex flex-col items-center mb-4 mt-2 relative z-10 gap-4">
+        <div class="group w-full max-w-5xl text-center bg-[#1e293b] border-l-8 border-red-600 py-4 px-6 flex flex-col items-center shadow-lg skew-title">
+            <textarea id="tournament-title" rows="1" 
+                      class="bg-transparent text-center font-extrabold text-white tracking-widest uppercase font-digital focus:outline-none w-full resize-none overflow-hidden h-auto leading-tight transition-all" 
+                      title="Click to edit Tournament Title"
+                      oninput="this.style.height = 'auto'; this.style.height = this.scrollHeight + 'px';">KABADDI CHAMPIONSHIP</textarea>
+            
+            <div id="slider-container" class="opacity-0 group-hover:opacity-100 max-h-0 group-hover:max-h-12 overflow-hidden flex items-center gap-3 mt-0 group-hover:mt-3 bg-white/10 px-4 py-1.5 rounded-full border border-white/20 text-xs text-white transition-all duration-300 ease-in-out">
+                <span class="font-bold uppercase tracking-wider text-[10px]">Size:</span>
+                <input type="range" id="title-size-slider" min="20" max="80" value="44" class="accent-red-500 h-1.5 w-24 md:w-36 rounded-lg appearance-none cursor-pointer">
+                <span id="title-size-val" class="font-mono font-bold text-white text-[11px] w-10 text-right">44px</span>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto w-full my-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative z-10">
+        <section class="lg:col-span-4 flex flex-col items-center">
+            <div class="w-full stadium-card rounded-lg overflow-hidden flex flex-col items-stretch relative min-h-[280px] border-b-8 border-red-600">
+                <div class="bg-[#334155] py-4 text-center border-b border-slate-700">
+                    <input type="text" id="team-a-name" value="Team A" class="bg-transparent text-center text-3xl font-black text-white tracking-widest focus:outline-none w-11/12 uppercase font-digital">
+                </div>
+                <div class="flex-grow flex items-center justify-center py-6">
+                    <span id="team-a-score" class="text-[100px] md:text-[120px] font-clock text-white leading-none">04</span>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-4 w-full px-2">
+                <button id="btn-minus-a" class="flex-1 bg-slate-700 hover:bg-red-900 border border-slate-600 text-white py-2 rounded font-bold text-xs uppercase tracking-wider transition">Reduce</button>
+                <button id="btn-plus-a" class="flex-[1.4] bg-red-600 hover:bg-red-700 text-white py-2 rounded font-extrabold text-xs uppercase tracking-wider transition">Add Point</button>
+            </div>
+        </section>
+
+        <section class="lg:col-span-4 flex flex-col items-center gap-6 py-4">
+            <div class="stadium-card rounded-2xl p-6 w-full max-w-[300px] text-center border border-slate-700 shadow-xl relative">
+                <div id="raid-display" class="text-[90px] font-clock leading-none text-white">30</div>
+                <div class="text-xs tracking-[0.2em] uppercase font-black text-white/50 mb-4">RAID CLOCK</div>
+                <div class="flex justify-between items-center px-4">
+                    <button id="btn-raid-reset" class="w-10 h-10 bg-slate-700 hover:bg-slate-600 rounded-lg flex items-center justify-center transition"><i class="fa-solid fa-rotate-left"></i></button>
+                    <button id="btn-raid-play" class="w-12 h-12 bg-red-600 hover:bg-red-700 text-white rounded-xl flex items-center justify-center font-bold shadow-lg transition"><i id="raid-play-icon" class="fa-solid fa-play"></i></button>
+                </div>
+            </div>
+
+            <div class="w-full flex flex-col items-center">
+                <div class="w-full bg-[#1e293b] py-3 text-center border-y-4 border-red-500">
+                    <input type="text" id="match-display" value="20:00" class="bg-transparent text-center text-5xl font-clock text-white tracking-widest focus:outline-none w-full">
+                </div>
+                <div class="flex justify-center items-center gap-4 mt-5">
+                    <button id="btn-match-reset" class="w-10 h-10 bg-slate-700 hover:bg-slate-600 text-white rounded-lg flex items-center justify-center transition"><i class="fa-solid fa-rotate-left"></i></button>
+                    <button id="btn-match-play" class="w-10 h-10 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center font-bold transition"><i class="fa-solid fa-play"></i></button>
+                    <button id="btn-siren" class="w-10 h-10 bg-amber-600 hover:bg-amber-700 text-white rounded-lg flex items-center justify-center transition"><i class="fa-solid fa-bullhorn"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <section class="lg:col-span-4 flex flex-col items-center">
+            <div class="w-full stadium-card rounded-lg overflow-hidden flex flex-col items-stretch relative min-h-[280px] border-b-8 border-blue-600">
+                <div class="bg-[#334155] py-4 text-center border-b border-slate-700">
+                    <input type="text" id="team-b-name" value="Team B" class="bg-transparent text-center text-3xl font-black text-white tracking-widest focus:outline-none w-11/12 uppercase font-digital">
+                </div>
+                <div class="flex-grow flex items-center justify-center py-6">
+                    <span id="team-b-score" class="text-[100px] md:text-[120px] font-clock text-white leading-none">00</span>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-4 w-full px-2">
+                <button id="btn-minus-b" class="flex-1 bg-slate-700 hover:bg-blue-900 border border-slate-600 text-white py-2 rounded font-bold text-xs uppercase tracking-wider transition">Reduce</button>
+                <button id="btn-plus-b" class="flex-[1.4] bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-extrabold text-xs uppercase tracking-wider transition">Add Point</button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="w-full max-w-5xl mx-auto mt-10 flex flex-col items-center px-4 pb-4 pt-6 border-t border-slate-800 gap-6">
+        <div class="flex items-center gap-6">
+            <button id="btn-fullscreen" class="text-white/50 hover:text-white transition"><i class="fa-solid fa-expand"></i> Fullscreen</button>
+            <img src="logo (2).png" alt="Tuskers Logo" class="h-20 w-20 object-contain rounded-full bg-white/5 border-2 border-white/10 p-1" onerror="this.src='https://placehold.co/150?text=Logo'">
+            <img src="471423977_517132358044973_6939918357938258059_n.jpg" alt="University Logo" class="h-20 w-20 object-contain rounded-full bg-white/5 border-2 border-white/10 p-1" onerror="this.src='https://placehold.co/150?text=UOP'">
+        </div>
+        <div class="text-[10px] text-white/30 font-bold tracking-[0.3em] uppercase italic">Developed by Pera Kabaddi</div>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        signInAnonymously(auth).then(() => {
+            const scoreRef = doc(db, 'artifacts', appId, 'public', 'data', 'scores', 'live');
+            onSnapshot(scoreRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.data();
+                    state.teamA.score = data.teamA;
+                    state.teamB.score = data.teamB;
+                    render();
+                }
+            });
+        });
+
+        async function updateRemoteScore(type, val) {
+            const scoreRef = doc(db, 'artifacts', appId, 'public', 'data', 'scores', 'live');
+            await updateDoc(scoreRef, { [type]: val });
+        }
+
+        const state = {
+            teamA: { score: 4 },
+            teamB: { score: 0 },
+            matchTime: 1200,
+            matchRunning: false,
+            raidTime: 30,
+            raidRunning: false
+        };
+
+        const dom = {
+            teamAScore: document.getElementById('team-a-score'),
+            teamBScore: document.getElementById('team-b-score'),
+            raidDisplay: document.getElementById('raid-display'),
+            btnRaidPlay: document.getElementById('btn-raid-play'),
+            raidPlayIcon: document.getElementById('raid-play-icon'),
+            btnRaidReset: document.getElementById('btn-raid-reset'),
+            matchDisplay: document.getElementById('match-display'),
+            btnMatchPlay: document.getElementById('btn-match-play'),
+            matchPlayIcon: document.querySelector('#btn-match-play i'),
+            btnMatchReset: document.getElementById('btn-match-reset'),
+            tournamentTitle: document.getElementById('tournament-title'),
+            btnSiren: document.getElementById('btn-siren')
+        };
+
+        let audioCtx = null;
+        function playSiren(duration) {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(550, now);
+                osc.frequency.linearRampToValueAtTime(950, now + duration/2);
+                osc.frequency.linearRampToValueAtTime(550, now + duration);
+                gainNode.gain.setValueAtTime(0.2, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + duration);
+            } catch(e) { console.warn("Audio blocked"); }
+        }
+
+        function render() {
+            dom.teamAScore.innerText = state.teamA.score.toString().padStart(2, '0');
+            dom.teamBScore.innerText = state.teamB.score.toString().padStart(2, '0');
+            dom.raidDisplay.innerText = state.raidTime;
+            const mins = Math.floor(state.matchTime/60);
+            const secs = state.matchTime%60;
+            if(document.activeElement !== dom.matchDisplay)
+                dom.matchDisplay.value = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+        }
+
+        document.getElementById('btn-plus-a').addEventListener('click', () => { state.teamA.score++; render(); });
+        document.getElementById('btn-minus-a').addEventListener('click', () => { state.teamA.score = Math.max(0, state.teamA.score - 1); render(); });
+        document.getElementById('btn-plus-b').addEventListener('click', () => { state.teamB.score++; render(); });
+        document.getElementById('btn-minus-b').addEventListener('click', () => { state.teamB.score = Math.max(0, state.teamB.score - 1); render(); });
+        dom.btnSiren.addEventListener('click', () => playSiren(2));
+        
+        // Keyboard Shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') { e.preventDefault(); dom.btnMatchPlay.click(); }
+            if (e.key === 'r' || e.key === 'R') dom.btnRaidReset.click();
+            if (e.key === '1') { state.teamA.score++; updateRemoteScore('teamA', state.teamA.score); }
+            if (e.key === '2') { state.teamB.score++; updateRemoteScore('teamB', state.teamB.score); }
+            if (e.key === 'f') { if (!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+        });
+
+        document.getElementById('btn-fullscreen').addEventListener('click', () => {
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+            else document.exitFullscreen();
+        });
+        
+        let matchInt = null, raidInt = null;
+        
+        dom.btnMatchPlay.addEventListener('click', () => {
+            if(state.matchRunning) { clearInterval(matchInt); state.matchRunning=false; dom.matchPlayIcon.className = "fa-solid fa-play"; }
+            else { state.matchRunning=true; dom.matchPlayIcon.className = "fa-solid fa-pause"; matchInt = setInterval(() => { if(state.matchTime>0) state.matchTime--; else { clearInterval(matchInt); state.matchRunning=false; dom.matchPlayIcon.className = "fa-solid fa-play"; playSiren(3); } render(); }, 1000); }
+        });
+
+        dom.btnRaidPlay.addEventListener('click', () => {
+            if(state.raidRunning) { clearInterval(raidInt); state.raidRunning=false; dom.raidPlayIcon.className = "fa-solid fa-play"; }
+            else { 
+                state.raidRunning=true; 
+                dom.raidPlayIcon.className = "fa-solid fa-pause"; 
+                raidInt = setInterval(() => { 
+                    if(state.raidTime > 0) { 
+                        state.raidTime--; 
+                        if(state.raidTime === 10) playSiren(2); 
+                        else if(state.raidTime === 5) playSiren(3); 
+                        else if(state.raidTime === 0) playSiren(4); 
+                    } else { 
+                        clearInterval(raidInt); 
+                        state.raidRunning=false; 
+                        dom.raidPlayIcon.className = "fa-solid fa-play"; 
+                    } 
+        document.getElementById('btn-plus-a').addEventListener('click', () => { state.teamA.score++; updateRemoteScore('teamA', state.teamA.score); });
+        document.getElementById('btn-minus-a').addEventListener('click', () => { state.teamA.score = Math.max(0, state.teamA.score - 1); updateRemoteScore('teamA', state.teamA.score); });
+        document.getElementById('btn-plus-b').addEventListener('click', () => { state.teamB.score++; updateRemoteScore('teamB', state.teamB.score); });
+        document.getElementById('btn-minus-b').addEventListener('click', () => { state.teamB.score = Math.max(0, state.teamB.score - 1); updateRemoteScore('teamB', state.teamB.score); });
+
+        dom.btnMatchReset.addEventListener('click', () => {
+             const parts = dom.matchDisplay.value.split(':');
+             state.matchTime = (parseInt(parts[0] || 0) * 60) + parseInt(parts[1] || 0);
+             render();
+        });
+
+        dom.btnRaidReset.addEventListener('click', () => { clearInterval(raidInt); state.raidRunning=false; dom.raidPlayIcon.className = "fa-solid fa-play"; state.raidTime=30; render(); });
+
+        document.getElementById('title-size-slider').addEventListener('input', (e) => {
+            const size = e.target.value;
+            dom.tournamentTitle.style.fontSize = `${size}px`;
+            document.getElementById('title-size-val').innerText = `${size}px`;
+        });
+        
+        // Initial height fix
+        dom.tournamentTitle.style.height = 'auto';
+        dom.tournamentTitle.style.height = dom.tournamentTitle.scrollHeight + 'px';
+        
+        render();
+    </script>
+</body>
+</html>
